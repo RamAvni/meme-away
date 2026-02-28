@@ -40,14 +40,18 @@ export function logger(msg: string, logLevel: LogLevel) {
   const prefix = `[${logLevel.toUpperCase()}]:`;
   switch (logLevel) {
     case "info":
-      console.info(`${getAnsiColor("blue")} ${prefix} ${msg}`);
+      console.info(getAnsiColor("blue") + `${prefix} ${msg}`);
+      break;
     case "debug":
-      console.debug(`${getAnsiColor("purple")} ${prefix} ${msg}`);
+      console.debug(getAnsiColor("purple") + `${prefix} ${msg}`);
+      break;
     case "warn":
-      console.warn(`${getAnsiColor("yellow")} ${prefix} ${msg}`);
+      console.warn(getAnsiColor("yellow") + `${prefix} ${msg}`);
+      break;
     case "error":
-      console.error(`${getAnsiColor("red")} ${prefix} ${msg}`);
+      console.error(getAnsiColor("red") + `${prefix} ${msg}`);
       console.trace(getAnsiColor("italic") + "Call Stack:");
+      break;
   }
   console.log(getAnsiColor("reset")); // Clear color/format for further messages
 }
