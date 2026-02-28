@@ -92,22 +92,21 @@ function logKeyboard(
   switch (event.key) {
     case "Backspace":
       text = text.slice(0, -1);
-      // redraw, in order to remove previous text
-      // TODO: find a better way?
-      // @ts-ignore -- We Expect that img.onload() does not take parameters.
-      img.onload();
-      ctx.fillText(text, 10, 50);
       break;
-    case " ":
+    case "\s":
       event.preventDefault(); // Prevents stuff like space triggers file input
     // Falls through!
     default:
-      if (event.key.match(/^([a-z]|[A-Z]|\s)$/)) {
-        text += event.key;
-        ctx.fillText(text, 10, 50);
-      }
+      if (event.key.match(/^(\p{L}|\s)$/u)) text += event.key;
       break;
   }
+
+  // redraw, in order to remove previous text
+  // TODO: find a better way?
+  // @ts-ignore -- We Expect that img.onload() does not take parameters.
+  img.onload();
+  ctx.fillText(text, 10, 50);
+  console.log(text);
   return text;
 }
 
