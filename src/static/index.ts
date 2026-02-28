@@ -53,12 +53,14 @@ function main() {
   if (!textModeInput) return console.log("no text mode input found");
   textModeInput.addEventListener("change", () => {
     if (textModeInput.checked)
-      document.addEventListener("keydown", (e) =>
-        logKeyboard(e, canvas.getContext("2d")!, img, text),
+      document.addEventListener(
+        "keydown",
+        (e) => (text = logKeyboard(e, canvas.getContext("2d")!, img, text)),
       );
     else
-      document.removeEventListener("keydown", (e) =>
-        logKeyboard(e, canvas.getContext("2d")!, img, text),
+      document.removeEventListener(
+        "keydown",
+        (e) => (text = logKeyboard(e, canvas.getContext("2d")!, img, text)),
       );
   });
 
@@ -101,12 +103,12 @@ function logKeyboard(
     // Falls through!
     default:
       if (event.key.match(/^([a-z]|[A-Z]|\s)$/)) {
-        console.log("text", text);
         text += event.key;
         ctx.fillText(text, 10, 50);
       }
       break;
   }
+  return text;
 }
 
 main();

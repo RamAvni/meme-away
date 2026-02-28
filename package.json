@@ -2,7 +2,6 @@
   "name": "meme-away",
   "type": "module",
   "scripts": {
-    "prebuild": "rm -rf ./build",
     "build": "tsc --project ./tsconfig.json && pnpm copyNonTsFiles",
     "copyNonTsFiles": "cd src && bash -c 'rsync -a --exclude='*.ts' ./static ../build'",
     "start": "node build/main.js"
