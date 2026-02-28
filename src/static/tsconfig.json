@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "declaration": false,
+    "tsBuildInfoFile": "../../build/static.tsbuildinfo",
+    "rootDir": ".",
+    "outDir": "../../build/static"
+  },
+  "include": ["."]
+}
