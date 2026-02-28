@@ -1,0 +1,54 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 8px;
+}
+
+canvas {
+  position: static;
+  display: block;
+}
+
+#text-mode {
+  --isChecked: false;
+  --dropSize: 1.5px;
+  --shadowSize: 2px;
+
+  display: block;
+  width: 24px;
+  height: 24px;
+
+  margin-bottom: 2px;
+
+  fill: white;
+  background-color: mediumblue;
+  box-shadow: 0px var(--shadowSize) 0px var(--shadowSize) midnightblue;
+  border-radius: 1px;
+
+  position: relative;
+  & * {
+    position: absolute;
+  }
+
+  & input {
+    visibility: hidden;
+    width: 100%;
+    height: 100%;
+  }
+
+  &:has(input:disabled) {
+    background-color: gray;
+    box-shadow: 0px var(--shadowSize) 0px var(--shadowSize) dimgray;
+  }
+
+  &:has(input:checked) {
+    transform: translate(0px, var(--dropSize));
+    box-shadow: 0 calc(var(--shadowSize) - 0.5px) 0
+      calc(var(--shadowSize) - 0.5px) midnightblue;
+    cursor: text;
+  }
+}
