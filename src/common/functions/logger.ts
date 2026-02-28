@@ -53,5 +53,5 @@ export function logger(msg: string, logLevel: LogLevel) {
       console.trace(getAnsiColor("italic") + "Call Stack:");
       break;
   }
-  console.log(getAnsiColor("reset")); // Clear color/format for further messages
+  process.stdout.write(getAnsiColor("reset")); // Clear color/format for further messages
 }
