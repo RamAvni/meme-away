@@ -1,1 +1,12 @@
-TODO: find a better way for deleting characters on input mode.
+
+
+sockets:
+	create a socker server side
+	connect to the socket from the static files
+
+
+Text:
+	TODO: find a better way for deleting characters on input mode.
+	img reloads on moving workspaces (strokeRect)
+
+	Feature: Can hold the mouse, draw a box, and input text

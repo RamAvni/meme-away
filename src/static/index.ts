@@ -12,9 +12,18 @@ function calculateAspectRatioFit(
   return { width: srcWidth * ratio, height: srcHeight * ratio };
 }
 
+function getMousePosRelativeToCanvas(canvas: HTMLCanvasElement, e: MouseEvent) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top,
+  };
+}
+
 function initCanvasContext(ctx: CanvasRenderingContext2D) {
   ctx.font = "28px serif";
   ctx.fillStyle = "white";
+  ctx.strokeStyle = "blue";
 }
 
 function handleImageLoading(img: HTMLImageElement, canvas: HTMLCanvasElement) {
@@ -47,48 +56,17 @@ function main() {
   let text = "";
   const img = new Image();
 
-  const textModeInput = document.getElementById(
-    "text-mode-checkbox",
-  ) as HTMLInputElement | null;
-  if (!textModeInput) return console.log("no text mode input found");
-  textModeInput.addEventListener("change", () => {
-    if (textModeInput.checked)
-      document.addEventListener(
-        "keydown",
-        (e) => (text = logKeyboard(e, canvas.getContext("2d")!, img, text)),
-      );
-    else
-      document.removeEventListener(
-        "keydown",
-        (e) => (text = logKeyboard(e, canvas.getContext("2d")!, img, text)),
-      );
-  });
-
-  const fileInput = document.getElementById(
-    "file-input",
-  ) as HTMLInputElement | null;
-  if (!fileInput) return console.log("no file input found");
-
-  fileInput.onchange = () => {
-    textModeInput.removeAttribute("disabled");
-    img.onload = () => handleImageLoading(img, canvas);
-
-    if (!fileInput.files)
-      return console.warn("fileInput on change called without a file uploaded");
-    img.src = URL.createObjectURL(fileInput.files[0]); // Will trigger img onload
-  };
+  listeners(canvas, text, img);
 }
 
 // ======================
 
-function logKeyboard(
+function handleTextMode(
   event: KeyboardEvent,
   ctx: CanvasRenderingContext2D,
   img: HTMLImageElement,
   text: string,
 ) {
-  console.log(event.key);
-
   switch (event.key) {
     case "Backspace":
       text = text.slice(0, -1);
@@ -120,3 +98,49 @@ main();
 // }
 //
 // getMemes();
+
+function listeners(
+  canvas: HTMLCanvasElement,
+  text: string,
+  img: HTMLImageElement,
+) {
+  const textModeInput = document.getElementById(
+    "text-mode-checkbox",
+  ) as HTMLInputElement | null;
+  if (!textModeInput) return console.log("no text mode input found");
+  textModeInput.addEventListener("change", () => {
+    if (textModeInput.checked) {
+      canvas.addEventListener("mousedown", (e) => {
+        const { x, y } = getMousePosRelativeToCanvas(canvas, e);
+        canvas.getContext("2d")?.strokeRect(x, y, 20, 20);
+      });
+      document.addEventListener(
+        "keydown",
+        (e) => (text = handleTextMode(e, canvas.getContext("2d")!, img, text)),
+      );
+    } else {
+      canvas.removeEventListener("mousedown", (e) => {
+        const { x, y } = getMousePosRelativeToCanvas(canvas, e);
+        canvas.getContext("2d")?.strokeRect(x, y, 20, 20);
+      });
+      document.removeEventListener(
+        "keydown",
+        (e) => (text = handleTextMode(e, canvas.getContext("2d")!, img, text)),
+      );
+    }
+  });
+
+  const fileInput = document.getElementById(
+    "file-input",
+  ) as HTMLInputElement | null;
+  if (!fileInput) return console.log("no file input found");
+
+  fileInput.onchange = () => {
+    textModeInput.removeAttribute("disabled");
+    img.onload = () => handleImageLoading(img, canvas);
+
+    if (!fileInput.files)
+      return console.warn("fileInput on change called without a file uploaded");
+    img.src = URL.createObjectURL(fileInput.files[0]); // Will trigger img onload
+  };
+}

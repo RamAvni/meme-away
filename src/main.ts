@@ -30,7 +30,7 @@ async function main() {
       return;
     }
 
-    let filePath: string = path.join(import.meta.dirname, "/static", req.url);
+    let filePath = path.join(import.meta.dirname, "/static", req.url);
     if (
       req.url &&
       (req.url.at(-1) === "/" || !req.url.split("/").at(-1)?.includes("."))

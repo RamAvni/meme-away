@@ -49,6 +49,7 @@ canvas {
     transform: translate(0px, var(--dropSize));
     box-shadow: 0 calc(var(--shadowSize) - 0.5px) 0
       calc(var(--shadowSize) - 0.5px) midnightblue;
+    filter: brightness(80%);
     cursor: text;
   }
 }
