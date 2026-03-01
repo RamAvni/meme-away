@@ -1,7 +1,7 @@
 import http from "http";
 import fs from "fs";
 import path from "path";
-import { logger } from "./common/functions/logger.js";
+import { logger } from "../common/functions/logger.js";
 
 const PORT = 8080;
 
