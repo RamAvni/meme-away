@@ -35,6 +35,4 @@ export function upgradeHttpToWebSocket(
       `Sec-WebSocket-Accept: ${secWcAccept}\r\n` +
       "\r\n",
   );
-
-  socket.pipe(socket);
 }
