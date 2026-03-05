@@ -111,6 +111,7 @@ async function main() {
     });
 
     socket.on("end", () => {
+      clients.splice(clients.indexOf(socket), 1);
       logger(
         `Connection with ${socket.remoteAddress} has been shutdown`,
         "info",
