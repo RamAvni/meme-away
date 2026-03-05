@@ -11,7 +11,7 @@ import {
 
 const PORT = 8080;
 
-let clients: net.Socket[] = [];
+const clients: net.Socket[] = [];
 
 function setError(res: http.ServerResponse, err: NodeJS.ErrnoException) {
   logger(err.message, "warn");
