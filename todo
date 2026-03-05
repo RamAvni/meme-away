@@ -1,9 +1,6 @@
 
 
 sockets:
-	create a socker server side
-	set a reverse proxy in order to use nodejs' http, without needing to implement the maojrity of it myself
-	connect to the socket from the static files
 
 https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_servers
 Note: Read the latest official WebSockets specification, RFC 6455. Sections 1 and 4-7 are especially interesting to server implementors. Section 10 discusses security and you should definitely peruse it before exposing your server.
