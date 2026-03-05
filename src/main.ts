@@ -2,7 +2,7 @@ import http from "http";
 import net from "net";
 import fs from "fs";
 import path from "path";
-import { logger } from "./common/functions/index.js";
+import { getLanIp, logger } from "./common/functions/index.js";
 import {
   parseSocketMessage,
   sendSocketMessage,
@@ -12,7 +12,6 @@ import {
 const PORT = 8080;
 
 let clients: net.Socket[] = [];
-let counter = 0;
 
 function setError(res: http.ServerResponse, err: NodeJS.ErrnoException) {
   logger(err.message, "warn");
@@ -91,6 +90,7 @@ async function main() {
   // On HTTP UPGRADE Request
   server.on("upgrade", async (httpReq, socket: net.Socket) => {
     upgradeHttpToWebSocket(httpReq, socket);
+    logger("upgraded a client to sockets", "info");
     clients.push(socket);
 
     // Initialie Listeners for that specific socket
@@ -120,6 +120,12 @@ async function main() {
 
   server.listen(PORT, () => {
     logger(`Server is listening on port ${PORT}`, "debug");
+    logger(
+      `You may access static files at: 
+\t ${`http://localhost:${PORT}`}, or at:
+\t http://${getLanIp()}:${PORT}`,
+      "debug",
+    );
   });
 }
 
