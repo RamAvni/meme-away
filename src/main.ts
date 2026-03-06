@@ -13,7 +13,13 @@ const PORT = 8080;
 const LOBBY_KEY_LENGTH = 6;
 
 interface Lobby {
-  clients: net.Socket[];
+  clients: Client[];
+}
+
+interface Client {
+  id: string;
+  name: string;
+  socket: net.Socket;
 }
 
 const clients: net.Socket[] = [];
@@ -148,13 +154,17 @@ async function main() {
 
     upgradeHttpToWebSocket(httpReq, socket);
     logger("upgraded a client to sockets", "info");
-    lobbies[lobbyId].clients.push(socket);
+    lobbies[lobbyId].clients.push({
+      socket,
+      id: crypto.randomUUID(),
+      name: "Guest",
+    });
     logger(`A Socket has joined lobby: ${lobbyId}`, "info");
 
     // Initialie Listeners for that specific socket
     socket.on("data", (data) => {
       lobbies[lobbyId].clients.forEach((client) => {
-        if (client !== socket) {
+        if (client.socket !== socket) {
           // NOTE: the sender socket will get its own message back
           const parsed = parseSocketMessage(data)?.toString("utf8");
           if (!parsed) {
@@ -163,7 +173,7 @@ async function main() {
             return;
           }
 
-          sendSocketMessage(client, parsed);
+          sendSocketMessage(client.socket, parsed);
         }
       });
     });
