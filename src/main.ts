@@ -10,8 +10,16 @@ import {
 } from "./common/functions/sockets/index.js";
 
 const PORT = 8080;
+const LOBBY_KEY_LENGTH = 6;
+
+interface Lobby {
+  clients: net.Socket[];
+}
 
 const clients: net.Socket[] = [];
+const lobbies: Record<string, Lobby> = {
+  1111: { clients: [] }, // For dev
+};
 
 function setError(res: http.ServerResponse, err: NodeJS.ErrnoException) {
   logger(err.message, "warn");
@@ -31,10 +39,18 @@ function getContentType(fileSuffix: string) {
   }
 }
 
-function provideStaticResource(reqUrl: string, res: http.ServerResponse) {
-  let filePath = path.join(import.meta.dirname, "/static", reqUrl);
+function processRequestUrl(url: string, res: http.ServerResponse) {
+  // Remove Special sub-paths (assuming the static folder follows suit)
+  // NOTE: if "lobby" is not found, nothing will happen.
+  const lobbyId = getLobbyIdFromUrl(url);
+  if (lobbyId) {
+    if (!lobbies[lobbyId]) return;
+    url = url.replace("/" + lobbyId, "");
+  }
 
-  if (reqUrl.at(-1) === "/" || !reqUrl.split("/").at(-1)?.includes("."))
+  let filePath = path.join(import.meta.dirname, "/static", url);
+
+  if (url.at(-1) === "/" || !url.split("/").at(-1)?.includes("."))
     filePath = path.join(filePath, "index.html");
 
   const fileSuffix = filePath.match(/\.\w+$/)?.[0];
@@ -42,6 +58,27 @@ function provideStaticResource(reqUrl: string, res: http.ServerResponse) {
     setError(res, new Error("No file suffix found")); // Shouldn't happen due to the logic above.
     return;
   }
+
+  return { filePath, fileSuffix };
+}
+
+function getLobbyIdFromUrl(url: string) {
+  const endpointAfterLobby = url?.match(/(?<=\/lobby\/)[^/]+/)?.[0];
+  if (
+    endpointAfterLobby?.includes(".css") ||
+    endpointAfterLobby?.includes(".js")
+  )
+    return;
+  else return endpointAfterLobby;
+}
+
+function provideStaticResource(reqUrl: string, res: http.ServerResponse) {
+  const processedUrl = processRequestUrl(reqUrl, res);
+  if (!processedUrl) {
+    setError(res, new Error("Error while processing request url"));
+    return;
+  }
+  const { filePath, fileSuffix } = processedUrl;
 
   fs.readFile(filePath, "utf8", (err, data) => {
     if (err) {
@@ -73,6 +110,18 @@ async function main() {
       return;
     } else if (req.url.startsWith("/api")) {
       // Handle API Logic
+      if (req.url === "/api/lobby") {
+        if (req.method === "GET") res.end(JSON.stringify(lobbies));
+        else if (req.method === "POST") {
+          const newLobbyId = Math.random()
+            .toString(16)
+            .substring(2, 2 + LOBBY_KEY_LENGTH);
+          lobbies[newLobbyId] = {
+            clients: [],
+          };
+          res.end(newLobbyId.toString());
+        }
+      }
     } else if (req.method === "upgrade") {
       // Handle Socket - currently in server.on("upgrade")
     } else {
@@ -89,13 +138,22 @@ async function main() {
 
   // On HTTP UPGRADE Request
   server.on("upgrade", async (httpReq, socket: net.Socket) => {
+    console.log(httpReq.url);
+    const lobbyId = httpReq.url && getLobbyIdFromUrl(httpReq.url); // An UPGRADE req must happen from a lobby url
+    if (!lobbyId) {
+      logger("could not find lobbyId, and perform UPGRADE", "error");
+      socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
+      return;
+    }
+
     upgradeHttpToWebSocket(httpReq, socket);
     logger("upgraded a client to sockets", "info");
-    clients.push(socket);
+    lobbies[lobbyId].clients.push(socket);
+    logger(`A Socket has joined lobby: ${lobbyId}`, "info");
 
     // Initialie Listeners for that specific socket
     socket.on("data", (data) => {
-      clients.forEach((client) => {
+      lobbies[lobbyId].clients.forEach((client) => {
         if (client !== socket) {
           // NOTE: the sender socket will get its own message back
           const parsed = parseSocketMessage(data)?.toString("utf8");

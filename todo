@@ -1,4 +1,5 @@
 
+replace general errors with proper HTTP error codes
 
 sockets:
 
