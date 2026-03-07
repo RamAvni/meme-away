@@ -1,7 +1,7 @@
 import { IncomingMessage } from "http";
-import { logger } from "../logger.js";
 import { type Socket } from "net";
 import crypto from "crypto";
+import { logger } from "../common/functions/logger.js";
 
 export function upgradeHttpToWebSocket(
   httpReq: IncomingMessage,
