@@ -2,9 +2,7 @@ const button = document.getElementById("upgrade") as HTMLButtonElement;
 button.onclick = handleSendingUpgradeReq;
 
 function handleSendingUpgradeReq() {
-  const socket = new WebSocket(
-    location.href.replace("http", "ws").replace("https", "ws"),
-  );
+  const socket = new WebSocket(location.href.replace(/http[s]?/, "ws"));
 
   socket.addEventListener("open", (event) => {
     socket.send("Hello Server!");

@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from "node:http";
-import { LOBBY_KEY_LENGTH } from "../common/consts/index.js";
 import { Lobby } from "../common/types/index.js";
+import { LOBBY_KEY_LENGTH } from "../common/consts.js";
 
 export function handleApiRequest(
   req: IncomingMessage,

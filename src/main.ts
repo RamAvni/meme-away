@@ -3,9 +3,9 @@ import { getLanIp, logger } from "./common/functions/index.js";
 import { setError } from "./common/functions/set-error.js";
 import { provideStaticResource } from "./web/index.js";
 import type { Lobby } from "./common/types/index.d.ts";
-import { PORT } from "./common/consts/index.js";
 import { handleApiRequest } from "./api/index.js";
 import { onUpgrade } from "./socket/index.js";
+import { PORT } from "./common/consts.js";
 
 const lobbies: Record<string, Lobby> = {
   1111: { clients: [] }, // For dev
