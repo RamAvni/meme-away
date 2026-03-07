@@ -16,7 +16,7 @@ export function onUpgrade(
 
   const lobbyId = req.url && getLobbyIdFromUrl(req.url);
   if (!lobbyId) {
-    logger("An UPGRADE Request mush happen from a lobby url", "error");
+    logger("An UPGRADE Request must happen from a lobby url", "error");
     socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
     return;
   }
