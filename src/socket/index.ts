@@ -1,9 +1,7 @@
 import { IncomingMessage } from "http";
 import { logger } from "../common/functions/logger.js";
 import { getLobbyIdFromUrl } from "../web/index.js";
-import type { Duplex } from "stream";
 import { upgradeHttpToWebSocket } from "./upgrade-http.js";
-import { Socket } from "net";
 import { parseSocketMessage, sendSocketMessage } from "./read-and-parse.js";
 import { Lobby } from "../common/types/index.js";
 
@@ -12,17 +10,18 @@ export * from "./upgrade-http.js";
 
 export function onUpgrade(
   req: IncomingMessage,
-  socket: Socket,
   lobbies: Record<string, Lobby>,
 ) {
-  const lobbyId = req.url && getLobbyIdFromUrl(req.url); // An UPGRADE req must happen from a lobby url
+  const socket = req.socket;
+
+  const lobbyId = req.url && getLobbyIdFromUrl(req.url);
   if (!lobbyId) {
-    logger("could not find lobbyId, and perform UPGRADE", "error");
+    logger("An UPGRADE Request mush happen from a lobby url", "error");
     socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
     return;
   }
 
-  upgradeHttpToWebSocket(req, socket);
+  upgradeHttpToWebSocket(req);
   logger("upgraded a client to sockets", "info");
   lobbies[lobbyId].clients.push({
     socket,

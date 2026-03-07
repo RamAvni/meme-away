@@ -23,8 +23,7 @@ async function main() {
       handleApiRequest(req, res, lobbies);
       return;
     } else if (req.method === "upgrade") {
-      // TODO: you can just take req, because socket is already refrenced inside it.
-      onUpgrade(req, req.socket, lobbies);
+      onUpgrade(req, lobbies);
     } else {
       provideStaticResource(req.url, res, lobbies);
       return;
