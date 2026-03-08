@@ -1,4 +1,4 @@
-import http from "http";
+import { createServer as createHttpServer } from "http";
 import { getLanIp, logger } from "./common/functions/index.js";
 import { setError } from "./common/functions/set-error.js";
 import { provideStaticResource } from "./web/index.js";
@@ -12,7 +12,7 @@ const lobbies: Record<string, Lobby> = {
 };
 
 async function main() {
-  const server = http.createServer();
+  const server = createHttpServer();
 
   // On HTTP Request
   server.on("request", (req, res) => {

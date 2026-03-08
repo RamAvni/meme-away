@@ -1,5 +1,5 @@
-import { IncomingMessage, ServerResponse } from "node:http";
-import { Lobby } from "../common/types/index.js";
+import type { IncomingMessage, ServerResponse } from "node:http";
+import type { Lobby } from "../common/types/index.d.ts";
 import { LOBBY_KEY_LENGTH } from "../common/consts.js";
 
 export function handleApiRequest(

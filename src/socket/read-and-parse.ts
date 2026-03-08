@@ -1,5 +1,4 @@
 import { type Socket } from "net";
-import { Buffer } from "node:buffer";
 // Source - https://stackoverflow.com/a/25235791
 export function sendSocketMessage(socket: Socket, msg: string) {
   const newFrame = Buffer.alloc(msg.length > 125 ? 4 : 2);
@@ -17,7 +16,7 @@ export function sendSocketMessage(socket: Socket, msg: string) {
 }
 
 // Source - https://stackoverflow.com/a/72690914
-export function parseSocketMessage(buffer) {
+export function parseSocketMessage(buffer: Buffer) {
   const firstByte = buffer.readUInt8(0);
   //const isFinalFrame = Boolean((firstByte >>> 7) & 0x1);
   //const [reserved1, reserved2, reserved3] = [ Boolean((firstByte >>> 6) & 0x1),

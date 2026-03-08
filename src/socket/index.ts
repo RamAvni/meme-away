@@ -1,9 +1,9 @@
-import { IncomingMessage } from "http";
+import type { IncomingMessage } from "http";
+import type { Lobby } from "../common/types/index.d.ts";
 import { logger } from "../common/functions/logger.js";
 import { getLobbyIdFromUrl } from "../web/index.js";
 import { upgradeHttpToWebSocket } from "./upgrade-http.js";
 import { parseSocketMessage, sendSocketMessage } from "./read-and-parse.js";
-import { Lobby } from "../common/types/index.js";
 
 export * from "./read-and-parse.js";
 export * from "./upgrade-http.js";
@@ -35,7 +35,7 @@ export function onUpgrade(
     lobbies[lobbyId].clients.forEach((client) => {
       if (client.socket !== socket) {
         // NOTE: the sender socket will get its own message back
-        const parsed = parseSocketMessage(data)?.toString("utf8");
+        const parsed = parseSocketMessage(data as Buffer)?.toString("utf8");
         if (!parsed) {
           logger("could not parse the recieved data", "error");
           socket.end("HTTP/1.1 400 Bad Request\r\n\r\n"); // Ideally, a Sec-WebSocket-Version should be sent back.

@@ -1,4 +1,4 @@
-import { ServerResponse } from "http";
+import type { ServerResponse } from "http";
 import { logger } from "./logger.js";
 
 export function setError(res: ServerResponse, err: NodeJS.ErrnoException) {

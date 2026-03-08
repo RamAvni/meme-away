@@ -1,5 +1,5 @@
-import { IncomingMessage } from "http";
-import crypto from "crypto";
+import type { IncomingMessage } from "http";
+import { createHash } from "crypto";
 import { logger } from "../common/functions/logger.js";
 
 export function upgradeHttpToWebSocket(req: IncomingMessage) {
@@ -20,8 +20,7 @@ export function upgradeHttpToWebSocket(req: IncomingMessage) {
   }
 
   // Exact steps as mandated by the WebSocketAPI specification.
-  const secWcAccept = crypto
-    .createHash("sha1")
+  const secWcAccept = createHash("sha1")
     .update(reqWcKey + magicString)
     .digest("base64");
 

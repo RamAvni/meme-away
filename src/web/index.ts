@@ -1,9 +1,9 @@
 import { type ServerResponse } from "node:http";
+import type { Lobby } from "../common/types/index.d.ts";
 import { join as joinPath } from "path";
 import { logger } from "../common/functions/logger.js";
 import { setError } from "../common/functions/set-error.js";
 import { readFile } from "node:fs";
-import { Lobby } from "../common/types/index.js";
 
 export function getContentType(fileSuffix: string) {
   switch (fileSuffix) {
