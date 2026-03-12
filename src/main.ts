@@ -22,7 +22,7 @@ async function main() {
     } else if (req.url.startsWith("/api")) {
       handleApiRequest(req, res, lobbies);
       return;
-    } else if (req.method === "upgrade") {
+    } else if (req.headers.upgrade) {
       onUpgrade(req, lobbies);
     } else {
       provideStaticResource(req.url, res, lobbies);
