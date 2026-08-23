@@ -8,4 +8,5 @@ export interface Client {
   id: string;
   name: string;
   socket: Socket;
+  isPlaying: boolean;
 }

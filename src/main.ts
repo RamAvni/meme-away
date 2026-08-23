@@ -11,7 +11,7 @@ const lobbies: Record<string, Lobby> = {
   1111: { clients: [] }, // For dev
 };
 
-async function main() {
+function main() {
   const server = createHttpServer();
 
   // On HTTP Request
@@ -41,4 +41,4 @@ async function main() {
   });
 }
 
-await main();
+main();
